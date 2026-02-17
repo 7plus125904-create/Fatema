@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>استبانة اتجاهات طالبات كلية التربية نحو مقرر القياس والتقويم</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+    body {
+      background: linear-gradient(145deg, #f2f5fc 0%, #e6ecf7 100%);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .card {
+      max-width: 1300px;
+      width: 100%;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(3px);
+      border-radius: 32px;
+      box-shadow: 0 20px 40px rgba(0,20,50,0.2), 0 8px 20px rgba(0,0,0,0.1);
+      padding: 25px 20px;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    h1, h2 {
+      color: #1e2f4d;
+      margin: 0 0 10px 0;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      border-right: 7px solid #b71234;
+      padding-right: 18px;
+    }
+    h1 { font-size: 1.9rem; }
+    h2 { font-size: 1.6rem; border-right-color: #2a5f8a; margin-top: 30px; }
+    .welcome {
+      background: #d9e6f5;
+      padding: 20px 25px;
+      border-radius: 50px 20px 50px 20px;
+      font-size: 1.3rem;
+      color: #0a2647;
+      border: 1px solid #ffffff;
+      box-shadow: inset 0 2px 5px #00000010;
+      margin-bottom: 30px;
+      font-weight: 500;
+      line-height: 1.7;
+    }
+    .general-info {
+      background: #f9fbfe;
+      border-radius: 30px;
+      padding: 25px 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px 30px;
+      border: 1px solid white;
+      box-shadow: 0 5px 15px #afc1d9;
+    }
+    .info-field {
+      flex: 1 1 200px;
+      min-width: 180px;
+    }
+    .info-field label {
+      display: block;
+      font-weight: 600;
+      color: #113b63;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    .info-field input, .info-field select {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 50px;
+      border: 1px solid #b0c7e0;
+      background: white;
+      font-size: 1rem;
+      transition: 0.2s;
+      outline: none;
+      font-family: inherit;
+    }
+    .info-field input:focus, .info-field select:focus {
+      border-color: #b71234;
+      box-shadow: 0 0 0 4px #f0c0c9;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      margin: 20px 0 25px;
+      border-radius: 30px;
+      background: #eef3fc;
+      padding: 5px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+      background: #ffffffd9;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px #839bb9;
+    }
+    th {
+      background: #0d2f52;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 18px 10px;
+      text-align: center;
+      border-left: 1px solid #305f88;
+    }
+    th:first-child {
+      width: 55px;
+    }
+    th:nth-child(2) {
+      text-align: right;
+      padding-right: 20px;
+    }
+    td {
+      padding: 16px 8px;
+      border-bottom: 1px solid #d3e2f5;
+      vertical-align: middle;
+      background-color: #ffffff;
+    }
+    td:first-child {
+      text-align: center;
+      font-weight: 700;
+      color: #1e3c63;
+      background: #f1f8ff;
+      width: 55px;
+    }
+    td:nth-child(2) {
+      text-align: right;
+      font-weight: 500;
+      padding-right: 18px;
+      color: #042442;
+      font-size: 1.05rem;
+    }
+    .radio-cell {
+      text-align: center;
+      background: #ffffff;
+    }
+    .radio-cell input[type="radio"] {
+      transform: scale(1.2);
+      accent-color: #b71234;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .result-bar {
+      background: #0f2b44;
+      color: white;
+      padding: 20px 30px;
+      border-radius: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin: 30px 0 20px;
+      gap: 20px;
+    }
+    .result-text {
+      font-size: 1.6rem;
+      font-weight: 600;
+      background: #b71234;
+      padding: 10px 35px;
+      border-radius: 40px;
+      box-shadow: 0 8px 0 #6e0b20;
+      letter-spacing: 1px;
+    }
+    .btn-submit {
+      background: #f5c542;
+      color: #102a41;
+      border: none;
+      padding: 20px 50px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      border-radius: 90px;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 15px 0 #b47d2b, 0 5px 25px #00000050;
+      border: 2px solid #ffeeb5;
+      margin-top: 15px;
+      letter-spacing: 2px;
+    }
+    .btn-submit:hover {
+      background: #ffd966;
+      transform: translateY(-3px);
+      box-shadow: 0 18px 0 #b47d2b, 0 8px 30px #00000060;
+    }
+    .btn-submit:active {
+      transform: translateY(8px);
+      box-shadow: 0 7px 0 #b47d2b;
+    }
+    .footer-note {
+      text-align: center;
+      color: #1f4973;
+      margin-top: 25px;
+      font-size: 1.2rem;
+    }
+    .required-star {
+      color: #b71234;
+      font-size: 1.4rem;
+      margin-right: 4px;
+    }
+    .mobile-optimize {
+      font-size: 0.95rem;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      .welcome { font-size: 1rem; padding: 15px; }
+      .result-text { font-size: 1.2rem; padding: 8px 18px; }
+      .btn-submit { font-size: 1.5rem; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🔹 أداة الدراسة 🔹</h1>
+  <div class="welcome">
+    <strong>عزيزتي الطالبة :</strong> نضع بين أيديكِ استبانة اتجاهات طالبات كلية التربية نحو مقرر القياس والتقويم، نأمل منكِ الاستجابة بكل شفافية. استجابتك تؤثر في صدق النتائج. نشكرك على حسن التعاون.
+  </div>
+
+  <!-- نموذج رئيسي يرسل إلى البريد عبر formsubmit.co (لا يحتاج المستخدم إلى بريد إلكتروني) -->
+  <form id="surveyForm" action="https://formsubmit.co/f.dili@uot.edu.ly" method="POST">
+    <!-- إعدادات formsubmit -->
+    <input type="hidden" name="_next" value="https://forms.gle/thankyou"> <!-- في حال عدم وجود رابط توجيه، سنستخدم رسالة تأكيد عبر JS -->
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_subject" value="نتائج استبانة القياس والتقويم">
+    <!-- حقل لحفظ النتيجة المحسوبة (يملأ بواسطة JS) -->
+    <input type="hidden" id="totalScoreInput" name="النتيجة_النهائية" value="">
+
+    <!-- البيانات العامة -->
+    <h2>📋 البيانات العامة للطالبة</h2>
+    <div class="general-info">
+      <div class="info-field">
+        <label>التخصص <span class="required-star">*</span></label>
+        <select name="التخصص" required>
+          <option value="" disabled selected>-- اختاري التخصص --</option>
+          <option value="قسم العلوم التربوية والنفسية">قسم العلوم التربوية والنفسية</option>
+          <option value="قسم اللغة العربية والدراسات الإسلامية">قسم اللغة العربية والدراسات الإسلامية</option>
+          <option value="قسم معلم فصل">قسم معلم فصل</option>
+          <option value="قسم رياض الأطفال">قسم رياض الأطفال</option>
+          <option value="قسم التربية الفنية">قسم التربية الفنية</option>
+          <option value="قسم الحاسب الآلي">قسم الحاسب الآلي</option>
+          <option value="قسم الرياضيات">قسم الرياضيات</option>
+          <option value="قسم التربية الخاصة">قسم التربية الخاصة</option>
+          <option value="قسم الفيزياء">قسم الفيزياء</option>
+          <option value="قسم اللغة الانجليزية">قسم اللغة الانجليزية</option>
+          <option value="قسم الأحياء">قسم الأحياء</option>
+          <option value="قسم الكيمياء">قسم الكيمياء</option>
+        </select>
+      </div>
+      <div class="info-field">
+        <label>الدرجة المتحصلة في المقرر (المجموع الكلي) <span class="required-star">*</span></label>
+        <input type="text" name="الدرجة_المتحصلة" placeholder="مثال: 85 أو A" required>
+      </div>
+      <div class="info-field">
+        <label>الفصل الدراسي <span class="required-star">*</span></label>
+        <select name="الفصل_الدراسي" required>
+          <option value="" disabled selected>-- اختاري --</option>
+          <option value="الربيع">الربيع</option>
+          <option value="الخريف">الخريف</option>
+        </select>
+      </div>
+      <div class="info-field">
+        <label>السنة (مثال: 2025) <span class="required-star">*</span></label>
+        <input type="number" name="السنة" placeholder="2025" min="2000" max="2030" required>
+      </div>
+    </div>
+
+    <h2>📊 بنود الاستبانة (36 عبارة)</h2>
+    <div class="table-responsive" id="table-container">
+      <!-- الجدول سيتم إنشاؤه تلقائياً بواسطة JavaScript ليسهل عرض 36 عبارة مع المحافظة على الهيكل -->
+    </div>
+
+    <!-- شريط النتيجة التفاعلية -->
+    <div class="result-bar">
+      <span>🌱 نتيجة الاتجاه (مجموع بعد عكس العبارات السلبية):</span>
+      <span class="result-text" id="liveScore">0 / 180</span>
+    </div>
+
+    <!-- زر الإرسال -->
+    <button type="submit" class="btn-submit" id="submitBtn">📨 إرسال الاستبانة</button>
+    <div class="footer-note">
+      * جميع الأسئلة مطلوبة. بعد الإرسال ستُرسل النسخة إلى بريد الباحثة f.dili@uot.edu.ly
+    </div>
+  </form>
+</div>
+
+<script>
+(function() {
+  // --- قائمة العبارات العربية مرتبة (36) ---
+  const items = [
+    "لا أرى فائدة لمقرر القياس والتقويم في الحياة العملية",
+    "لا استمتع بحل التدريبات أو المسائل في القياس والتقويم",
+    "يعتبر القياس والتقويم أحد متطلبات النمو المهني",
+    "معلوماتي في القياس والتقويم مازالت في حاجة إلى أكثر من فصل دراسي",
+    "لا أرى فائدة لمقرر القياس والتقويم في مجال عمل المعلمة",
+    "أفضل مقرر القياس والتقويم على مواد أخرى تربوية",
+    "أجد صعوبة في استيعاب المعلومات الخاصة بالقياس والتقويم",
+    "أشعر بالتوتر في محاضرات القياس والتقويم",
+    "أستخدم القياس والتقويم بشكل يومي في حياتي العامة",
+    "أتردد في أن أطلب من الأستاذ شرحاً أكثر لموضوع غير واضح لدي",
+    "استيعابي لمقرر القياس والتقويم جيد",
+    "أبذل جهداً إضافياً لفهم موضوعات مقرر القياس والتقويم",
+    "أشعر أن مقرر القياس والتقويم بعيد عن تخصصي",
+    "يجمع مقرر القياس والتقويم بين النظرية والتطبيق",
+    "محتوى مقرر القياس والتقويم يرتبط بأمثلة من واقعنا",
+    "توافرت مراجع القياس والتقويم (إلكترونياً – مكتبة الكلية)",
+    "أكثر معلومات هذا المقرر مجردة وتشكل صعوبة",
+    "لا ترتبط معلومات القياس والتقويم بالخبرة السابقة",
+    "منهج القياس والتقويم مزدحم بالحسابات الإحصائية المعقدة",
+    "أشعر أن متطلبات المقرر تفوق قدراتي",
+    "منهج القياس يساعدني في فهم المفاهيم الأساسية للتقويم التربوي وأسسه العلمية",
+    "أرى أن موضوعات مقرر القياس والتقويم تقدم بطريقة منظمة ومترابطة",
+    "يمكنني استخدام أنواع التقويم في مهنتي مستقبلاً",
+    "كتاب المقرر احتوى على المادة التعليمية بصورة جيدة",
+    "أستاذ القياس والتقويم متمكن بمحتوى المقرر",
+    "يستخدم الأستاذ أساليب متنوعة لتقويم المقرر (اختبارات وتكليفات داخل وخارج القاعة)",
+    "يستخدم أستاذ القياس والتقويم وسائل متعددة في شرح الدرس",
+    "يتميز أستاذ المقرر بمهارات تواصل لفظية وغير لفظية",
+    "أستاذ القياس والتقويم ينقصه فهم احتياجات الطلاب وميولهم",
+    "الأستاذ يوزع الوقت بين الشرح والتطبيق",
+    "أستاذ القياس والتقويم يعامل طلابه معاملة حسنة",
+    "طرق شرح مقرر القياس والتقويم تثير الاهتمام وتجعلني أنتبه",
+    "يحرص أستاذ القياس والتقويم بتوفير بيئة تعليمية آمنة",
+    "تتاح لي الفرصة كاملة في المناقشة أثناء المحاضرات",
+    "أستاذ القياس والتقويم يساعد الطالبات في الوصول إلى الإجابة الصحيحة",
+    "أساليب التقويم في المقرر واضحة ومناسبة"
+  ];
+
+  // --- الأسئلة السلبية (التي تعكس) حسب محتوى العبارات ---
+  const negativeIndices = [0,1,3,4,6,7,9,12,16,17,18,19,28]; // 0-based: 1,2,4,5,7,8,10,13,17,18,19,20,29
+
+  // دالة عكس القيمة (5→1, 4→2, 3→3, 2→4, 1→5)
+  function reverseValue(val) {
+    return 6 - val;
+  }
+
+  // إنشاء الجدول ديناميكياً
+  function renderTable() {
+    const container = document.getElementById('table-container');
+    let html = '<table id="itemsTable"><thead><tr><th>#</th><th>العبارة</th><th>موافق بشدة</th><th>موافق</th><th>محايد</th><th>لا أوافق</th><th>لا أوافق بشدة</th></tr></thead><tbody>';
+    for (let i = 0; i < items.length; i++) {
+      const num = i + 1;
+      html += `<tr>`;
+      html += `<td>${num}</td>`;
+      html += `<td>${items[i]}</td>`;
+      // موافق بشدة (5)
+      html += `<td class="radio-cell"><input type="radio" name="q${num}" value="5" required onchange="updateScore()"></td>`;
+      // موافق (4)
+      html += `<td class="radio-cell"><input type="radio" name="q${num}" value="4" required onchange="updateScore()"></td>`;
+      // محايد (3)
+      html += `<td class="radio-cell"><input type="radio" name="q${num}" value="3" required onchange="updateScore()"></td>`;
+      // لا أوافق (2)
+      html += `<td class="radio-cell"><input type="radio" name="q${num}" value="2" required onchange="updateScore()"></td>`;
+      // لا أوافق بشدة (1)
+      html += `<td class="radio-cell"><input type="radio" name="q${num}" value="1" required onchange="updateScore()"></td>`;
+      html += `</tr>`;
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  // دالة تحديث النتيجة الحية (موجودة في النطاق العام)
+  window.updateScore = function() {
+    let total = 0;
+    let answeredCount = 0;
+    for (let i = 0; i < items.length; i++) {
+      const radios = document.getElementsByName(`q${i+1}`);
+      let selectedVal = null;
+      for (let r of radios) {
+        if (r.checked) {
+          selectedVal = parseInt(r.value, 10);
+          break;
+        }
+      }
+      if (selectedVal !== null) {
+        answeredCount++;
+        // إذا كان السؤال سلبيًا نعكس القيمة
+        if (negativeIndices.includes(i)) {
+          total += reverseValue(selectedVal);
+        } else {
+          total += selectedVal;
+        }
+      }
+    }
+    const scoreElement = document.getElementById('liveScore');
+    if (answeredCount === items.length) {
+      scoreElement.innerText = `${total} / 180`;
+    } else {
+      scoreElement.innerText = `${total} / 180 (أكملي ${items.length - answeredCount} عبارة)`;
+    }
+    // تحديث الحقل المخفي بالقيمة العددية للإرسال
+    document.getElementById('totalScoreInput').value = total;
+  };
+
+  // التحقق عند الإرسال من إكمال جميع الأسئلة
+  function validateBeforeSubmit(e) {
+    const totalQs = items.length;
+    for (let i = 0; i < totalQs; i++) {
+      const radios = document.getElementsByName(`q${i+1}`);
+      let checked = false;
+      for (let r of radios) {
+        if (r.checked) { checked = true; break; }
+      }
+      if (!checked) {
+        alert(`الرجاء الإجابة على السؤال رقم ${i+1} قبل الإرسال.`);
+        e.preventDefault();
+        return false;
+      }
+    }
+    // التأكد من ملء البيانات العامة (التخصص، الدرجة، الفصل، السنة)
+    const generalSelects = document.querySelectorAll('.general-info select[required]');
+    for (let field of generalSelects) {
+      if (!field.value) {
+        alert('الرجاء اختيار التخصص والفصل الدراسي.');
+        e.preventDefault();
+        return false;
+      }
+    }
+    const generalInputs = document.querySelectorAll('.general-info input[required]');
+    for (let field of generalInputs) {
+      if (!field.value.trim()) {
+        alert('الرجاء ملء الدرجة والسنة.');
+        e.preventDefault();
+        return false;
+      }
+    }
+    // تحديث النتيجة مرة أخرى قبل الإرسال
+    updateScore();
+    return true;
+  }
+
+  // ربط حدث validate
+  document.getElementById('surveyForm').addEventListener('submit', function(e) {
+    if (!validateBeforeSubmit(e)) {
+      e.preventDefault();
+      return;
+    }
+    // formsubmit سيتولى الباقي
+  });
+
+  // بداية: رسم الجدول وتحديث النتيجة كلما تغير أي راديو
+  renderTable();
+  window.updateScore(); // لحساب البداية (0)
+
+  // إعادة حساب النتيجة عند أي تغيير في الحقول (تحديث يدوي إضافي)
+  document.body.addEventListener('change', function(e) {
+    if (e.target && e.target.type === 'radio' && e.target.name.startsWith('q')) {
+      updateScore();
+    }
+  });
+
+})();
+</script>
+
+<noscript>يلزم تفعيل جافاسكريبت لاستخدام الاستبانة</noscript>
+</body>
+</html>
