@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>رحلة الكنز البحرية - المستوى الديكارتي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a3342 0%, #0c4a5e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+        }
+
+        .game-wrapper {
+            background: #022b36;
+            border-radius: 70px;
+            padding: 20px 25px 25px 25px;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.5);
+        }
+
+        .game-container {
+            max-width: 1300px;
+            background: #fde9cf;
+            border-radius: 60px;
+            padding: 20px;
+            box-shadow: inset 0 0 0 3px #ffdd99, 0 20px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d45a1e;
+            font-size: 2rem;
+            text-shadow: 3px 3px 0 #ffcd94;
+            margin-bottom: 5px;
+        }
+
+        .sub {
+            text-align: center;
+            background: #2e86ab;
+            color: white;
+            padding: 8px;
+            border-radius: 60px;
+            width: fit-content;
+            margin: 0 auto 20px auto;
+            padding: 8px 25px;
+        }
+
+        .flex-main {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-area {
+            flex: 2;
+            min-width: 650px;
+        }
+
+        .info-panel {
+            flex: 1;
+            min-width: 260px;
+            background: #fdf0db;
+            border-radius: 45px;
+            padding: 20px;
+            box-shadow: 0 8px 0 #c29a6b;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 35px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            cursor: crosshair;
+            width: 100%;
+            height: auto;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+            background: #fff2e0;
+            padding: 15px;
+            border-radius: 35px;
+            font-size: 0.9rem;
+        }
+
+        .legend span {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .coord-control {
+            background: #ffe2b5;
+            border-radius: 40px;
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .ship-coord {
+            background: #1f6392;
+            color: gold;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 50px;
+            font-family: monospace;
+        }
+
+        .quest-box {
+            background: #ffdead;
+            border-radius: 35px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .quest-buttons button {
+            background: #e67e22;
+            border: none;
+            padding: 8px 16px;
+            margin: 6px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quest-buttons button:hover {
+            background: #b85e0a;
+            transform: scale(1.02);
+        }
+
+        .feedback {
+            background: #eeddbb;
+            padding: 12px;
+            border-radius: 35px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        button.action-btn {
+            background: #2c7a47;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 35px;
+            font-weight: bold;
+            margin: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            padding: 12px 28px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 5px 20px black;
+        }
+
+        .firework-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1999;
+        }
+
+        @keyframes popAnim {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-wrapper">
+    <div class="game-container">
+        <h1>⚓ رحلة البحار سندباد 🧭</h1>
+        <div class="sub">🌊 المستوى الديكارتي | حرِّك السفينة إلى الأهداف 🌊</div>
+
+        <div class="flex-main">
+            <div class="canvas-area">
+                <canvas id="treasureCanvas" width="800" height="650" style="width:100%; height:auto; max-width:800px; border-radius: 40px;"></canvas>
+            </div>
+
+            <div class="info-panel">
+                <div class="legend">
+                    <div><span style="background: #2ecc71;"></span> 🏠 <strong>الميناء</strong> (0, -2)</div>
+                    <div><span style="background: #d35400;"></span> 🏝️ <strong>الجزيرة</strong> (3, 1)</div>
+                    <div><span style="background: #f1c40f;"></span> 📦 <strong>صندوق الكنز</strong> (-2, 3)</div>
+                    <div><span style="background: #8B4513;"></span> ⛵ <strong>سفينتك</strong> مع بحار وشراع وعلم</div>
+                </div>
+
+                <div class="coord-control">
+                    <div>📍 موقع السفينة الحالي:</div>
+                    <div class="ship-coord" id="shipCoordDisplay">(0 , -2)</div>
+                    <div style="margin-top: 10px;">
+                        <input type="range" id="xControl" min="-5" max="5" step="0.5" value="0">
+                        <span>س: <span id="xVal">0</span></span><br>
+                        <input type="range" id="yControl" min="-5" max="5" step="0.5" value="-2">
+                        <span>ص: <span id="yVal">-2</span></span>
+                    </div>
+                    <button class="action-btn" id="resetShipBtn" style="background:#1f6392;">⚓ إعادة السفينة للميناء</button>
+                </div>
+
+                <div class="quest-box">
+                    <p><strong>📯 مغامرات سندباد:</strong></p>
+                    <div class="quest-buttons">
+                        <button data-target="port">🚢 من الميناء → الجزيرة</button>
+                        <button data-target="island">🏝️ من الجزيرة → صندوق الكنز</button>
+                        <button data-target="treasure">📦 من الكنز → الميناء</button>
+                    </div>
+                    <div class="feedback" id="questFeedback">
+                        اختر مغامرة وحرّك السفينة إلى الهدف!
+                    </div>
+                </div>
+                <button class="action-btn" id="checkArrivalBtn" style="background:#e67e22;">✅ تحقق من الوصول للهدف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // المعالم
+        const PORT = { x: 0, y: -2 };
+        const ISLAND = { x: 3, y: 1 };
+        const TREASURE = { x: -2, y: 3 };
+
+        let currentShip = { x: 0, y: -2 };
+        let activeMission = null;
+
+        const canvas = document.getElementById('treasureCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = 800;
+        let height = canvas.height = 650;
+
+        const xSlider = document.getElementById('xControl');
+        const ySlider = document.getElementById('yControl');
+        const xValSpan = document.getElementById('xVal');
+        const yValSpan = document.getElementById('yVal');
+        const shipCoordSpan = document.getElementById('shipCoordDisplay');
+        const questFeedback = document.getElementById('questFeedback');
+        const checkBtn = document.getElementById('checkArrivalBtn');
+
+        function updateShipFromSliders() {
+            currentShip.x = parseFloat(xSlider.value);
+            currentShip.y = parseFloat(ySlider.value);
+            xValSpan.innerText = currentShip.x;
+            yValSpan.innerText = currentShip.y;
+            shipCoordSpan.innerText = `(${currentShip.x} , ${currentShip.y})`;
+            drawFullScene();
+        }
+
+        function setShipPosition(x, y, updateSliders=true) {
+            currentShip.x = Math.min(5, Math.max(-5, x));
+            currentShip.y = Math.min(5, Math.max(-5, y));
+            if(updateSliders) {
+                xSlider.value = currentShip.x;
+                ySlider.value = currentShip.y;
+                xValSpan.innerText = currentShip.x;
+                yValSpan.innerText = currentShip.y;
+            }
+            shipCoordSpan.innerText = `(${currentShip.x} , ${currentShip.y})`;
+            drawFullScene();
+        }
+
+        // رسم صندوق الكنز (حجم متوسط)
+        function drawTreasureChest(x, y) {
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            const px = centerX + x*step;
+            const py = centerY - y*step;
+            
+            // قاعدة الصندوق
+            ctx.fillStyle = "#b87c4f";
+            ctx.fillRect(px-18, py-8, 36, 20);
+            ctx.fillStyle = "#d49563";
+            ctx.fillRect(px-16, py-12, 32, 8);
+            
+            // غطاء مفتوح
+            ctx.fillStyle = "#c4883e";
+            ctx.beginPath();
+            ctx.moveTo(px-18, py-12);
+            ctx.lineTo(px, py-32);
+            ctx.lineTo(px+18, py-12);
+            ctx.fill();
+            
+            // حلقات الصندوق
+            ctx.fillStyle = "#CD7F32";
+            ctx.beginPath();
+            ctx.arc(px-10, py-6, 2.5, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(px+10, py-6, 2.5, 0, 2*Math.PI);
+            ctx.fill();
+            
+            // خطوط خشبية خفيفة
+            ctx.strokeStyle = "#8B5A2B";
+            ctx.lineWidth = 1;
+            for(let i = -12; i <= 12; i+=8) {
+                ctx.beginPath();
+                ctx.moveTo(px+i, py-8);
+                ctx.lineTo(px+i, py+8);
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = "#2c3e50";
+            ctx.font = "bold 11px Tahoma";
+            ctx.fillText("صندوق الكنز", px-25, py-40);
+            ctx.fillStyle = "#000";
+            ctx.font = "bold 10px monospace";
+            ctx.fillText(`(${x},${y})`, px-22, py+16);
+        }
+
+        // رسم الجزيرة (حجم متوسط)
+        function drawIsland(x, y) {
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            const px = centerX + x*step;
+            const py = centerY - y*step;
+            
+            // قاعدة الجزيرة
+            ctx.fillStyle = "#9b6a3e";
+            ctx.beginPath();
+            ctx.ellipse(px, py+5, 22, 14, 0, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "#6b8e23";
+            ctx.beginPath();
+            ctx.ellipse(px, py+0, 18, 12, 0, 0, 2*Math.PI);
+            ctx.fill();
+            
+            // أشجار نخيل متوسطة
+            ctx.fillStyle = "#4CAF50";
+            ctx.font = "28px 'Segoe UI'";
+            ctx.fillText("🌴", px-14, py-12);
+            ctx.fillText("🌴", px+4, py-14);
+            
+            ctx.fillStyle = "#2c3e50";
+            ctx.font = "bold 11px Tahoma";
+            ctx.fillText("الجزيرة", px-18, py+18);
+            ctx.font = "bold 10px monospace";
+            ctx.fillText(`(${x},${y})`, px-16, py+28);
+        }
+
+        // رسم الميناء (حجم متوسط)
+        function drawPort(x, y) {
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            const px = centerX + x*step;
+            const py = centerY - y*step;
+            
+            ctx.fillStyle = "#8B7355";
+            ctx.fillRect(px-16, py-6, 32, 12);
+            ctx.fillStyle = "#5D4E37";
+            ctx.fillRect(px-6, py-16, 8, 12);
+            ctx.fillStyle = "#FFD700";
+            ctx.font = "24px 'Segoe UI'";
+            ctx.fillText("🏠", px-10, py-12);
+            
+            ctx.fillStyle = "#2c3e50";
+            ctx.font = "bold 11px Tahoma";
+            ctx.fillText("الميناء", px-20, py+12);
+            ctx.font = "bold 10px monospace";
+            ctx.fillText(`(${x},${y})`, px-18, py+22);
+        }
+
+        // رسم السفينة البارزة مع شراع وعلم ورجل
+        function drawShip(x, y) {
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            const px = centerX + x*step;
+            const py = centerY - y*step;
+            
+            ctx.shadowBlur = 5;
+            // هيكل السفينة
+            ctx.fillStyle = "#8B4513";
+            ctx.beginPath();
+            ctx.moveTo(px-24, py-3);
+            ctx.lineTo(px-18, py+8);
+            ctx.lineTo(px+18, py+8);
+            ctx.lineTo(px+24, py-3);
+            ctx.fill();
+            ctx.fillStyle = "#A0522D";
+            ctx.fillRect(px-18, py-8, 36, 8);
+            
+            // الصاري
+            ctx.fillStyle = "#5D3A1A";
+            ctx.fillRect(px-4, py-38, 6, 38);
+            
+            // الشراع
+            ctx.fillStyle = "#F5F5DC";
+            ctx.beginPath();
+            ctx.moveTo(px-2, py-36);
+            ctx.lineTo(px+20, py-14);
+            ctx.lineTo(px-2, py-14);
+            ctx.fill();
+            ctx.fillStyle = "#EEDDCC";
+            ctx.beginPath();
+            ctx.moveTo(px+2, py-36);
+            ctx.lineTo(px-16, py-14);
+            ctx.lineTo(px+2, py-14);
+            ctx.fill();
+            
+            // العلم
+            ctx.fillStyle = "#E63946";
+            ctx.beginPath();
+            ctx.moveTo(px-2, py-40);
+            ctx.lineTo(px+14, py-46);
+            ctx.lineTo(px-2, py-48);
+            ctx.fill();
+            ctx.fillStyle = "#FFD700";
+            ctx.font = "bold 12px 'Segoe UI'";
+            ctx.fillText("⚓", px+4, py-44);
+            
+            // رجل (بحار)
+            ctx.fillStyle = "#F4A460";
+            ctx.beginPath();
+            ctx.arc(px-10, py-12, 5, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "#2c3e50";
+            ctx.fillRect(px-12, py-8, 5, 10);
+            ctx.fillStyle = "#1E3A5F";
+            ctx.beginPath();
+            ctx.moveTo(px-12, py-8);
+            ctx.lineTo(px-18, py-1);
+            ctx.lineTo(px-12, py-3);
+            ctx.fill();
+            // قبعة
+            ctx.fillStyle = "#34495E";
+            ctx.fillRect(px-15, py-18, 11, 5);
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "bold 12px 'Segoe UI'";
+            ctx.fillText("👨‍✈️", px-15, py-13);
+            
+            // اسم السفينة
+            ctx.fillStyle = "#2c3e50";
+            ctx.font = "bold 9px Tahoma";
+            ctx.fillText("سفينة الأمل", px-20, py+18);
+            ctx.fillStyle = "#000";
+            ctx.font = "bold 10px monospace";
+            ctx.fillText(`(${x},${y})`, px-18, py+26);
+            ctx.shadowBlur = 0;
+        }
+
+        function drawBackground() {
+            // خلفية بحرية بلون سماوي هادئ
+            ctx.fillStyle = "#87CEEB";
+            ctx.fillRect(0, 0, width, height);
+            
+            // شاطئ رملي
+            ctx.fillStyle = "#f7d794";
+            ctx.fillRect(0, height-80, width, 80);
+            for(let i=0;i<100;i++) {
+                ctx.beginPath();
+                ctx.arc(15 + i*25, height-65, 3, 0, Math.PI*2);
+                ctx.fillStyle = "#e6bc80";
+                ctx.fill();
+            }
+            
+            // شمس
+            ctx.fillStyle = "#FFD966";
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            ctx.arc(80, 75, 40, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "#FFB347";
+            ctx.beginPath();
+            ctx.arc(80, 75, 30, 0, 2*Math.PI);
+            ctx.fill();
+            
+            // غيوم
+            ctx.fillStyle = "#f0f8ffcc";
+            ctx.beginPath();
+            ctx.ellipse(200, 60, 45, 30, 0, 0, 2*Math.PI);
+            ctx.ellipse(245, 50, 48, 32, 0, 0, 2*Math.PI);
+            ctx.ellipse(290, 60, 38, 28, 0, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(580, 45, 48, 32, 0, 0, 2*Math.PI);
+            ctx.ellipse(630, 40, 45, 30, 0, 0, 2*Math.PI);
+            ctx.ellipse(680, 50, 40, 28, 0, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawGrid() {
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            ctx.beginPath();
+            ctx.strokeStyle = "#ffa559";
+            ctx.lineWidth = 1.8;
+            for(let i=-5; i<=5; i++) {
+                const xPos = centerX + i*step;
+                ctx.beginPath();
+                ctx.moveTo(xPos, 0);
+                ctx.lineTo(xPos, height);
+                ctx.stroke();
+                const yPos = centerY - i*step;
+                ctx.beginPath();
+                ctx.moveTo(0, yPos);
+                ctx.lineTo(width, yPos);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.lineWidth = 3.5;
+            ctx.strokeStyle = "#d45a1e";
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.stroke();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+            
+            ctx.font = "bold 15px 'Segoe UI'";
+            ctx.fillStyle = "#b64926";
+            for(let i=-5; i<=5; i++) {
+                if(i!==0) ctx.fillText(i, centerX + i*step - 10, centerY + 24);
+                if(i!==0) ctx.fillText(i, centerX + 16, centerY - i*step + 10);
+            }
+        }
+
+        function drawFullScene() {
+            drawBackground();
+            drawGrid();
+            drawPort(PORT.x, PORT.y);
+            drawIsland(ISLAND.x, ISLAND.y);
+            drawTreasureChest(TREASURE.x, TREASURE.y);
+            drawShip(currentShip.x, currentShip.y);
+        }
+
+        function setMission(missionType) {
+            if(missionType === "port") activeMission = { from: PORT, to: ISLAND, name: "من الميناء إلى الجزيرة" };
+            else if(missionType === "island") activeMission = { from: ISLAND, to: TREASURE, name: "من الجزيرة إلى صندوق الكنز" };
+            else if(missionType === "treasure") activeMission = { from: TREASURE, to: PORT, name: "من الكنز إلى الميناء" };
+            questFeedback.innerHTML = `🎯 المهمة: ${activeMission.name}. حرك السفينة إلى الهدف ثم اضغط "تحقق" 🎯`;
+            questFeedback.style.background = "#ffe0a3";
+        }
+
+        function checkArrival() {
+            if(!activeMission) {
+                questFeedback.innerHTML = "⚠️ اختر مهمة أولاً!";
+                return;
+            }
+            const target = activeMission.to;
+            const tolerance = 0.2;
+            const isCorrect = (Math.abs(currentShip.x - target.x) <= tolerance && Math.abs(currentShip.y - target.y) <= tolerance);
+            if(isCorrect) {
+                playFireworks();
+                let targetName = target===PORT ? "الميناء" : (target===ISLAND ? "الجزيرة" : "صندوق الكنز");
+                questFeedback.innerHTML = `🎉 نجاح! وصلت إلى ${targetName} 🎉`;
+                questFeedback.style.background = "#c8e6d9";
+                setTimeout(()=>{
+                    if(activeMission.name.includes("الميناء إلى الجزيرة")) setMission("island");
+                    else if(activeMission.name.includes("الجزيرة إلى صندوق الكنز")) setMission("treasure");
+                    else if(activeMission.name.includes("الكنز إلى الميناء")) {
+                        questFeedback.innerHTML = "🏆 تهانينا! أكملت الرحلة كاملة (ميناء ← جزيرة ← كنز ← ميناء) 🏆";
+                        playFireworks();
+                        activeMission = null;
+                    }
+                }, 1000);
+            } else {
+                playWrongSound();
+                let targetName = target===PORT ? "الميناء" : (target===ISLAND ? "الجزيرة" : "صندوق الكنز");
+                questFeedback.innerHTML = `❌ لم تصل بعد! الهدف: ${targetName} عند (${target.x},${target.y}). حرك سفينتك إليه.`;
+                questFeedback.style.background = "#ffe0e0";
+            }
+            drawFullScene();
+        }
+
+        function playFireworks() {
+            const container = document.createElement("div");
+            container.className = "firework-effect";
+            document.body.appendChild(container);
+            for(let i=0;i<100;i++) {
+                const p = document.createElement("div");
+                p.style.position = "absolute";
+                p.style.width = "9px";
+                p.style.height = "9px";
+                p.style.background = `hsl(${Math.random()*360},100%,60%)`;
+                p.style.borderRadius = "50%";
+                p.style.left = Math.random() * window.innerWidth + "px";
+                p.style.top = Math.random() * window.innerHeight + "px";
+                p.style.animation = "popAnim 0.8s ease-out forwards";
+                p.style.pointerEvents = "none";
+                container.appendChild(p);
+                setTimeout(()=>p.remove(),800);
+            }
+            setTimeout(()=>container.remove(),900);
+            const audio = new AudioContext();
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.connect(gain);
+            gain.connect(audio.destination);
+            osc.frequency.value = 880;
+            gain.gain.value = 0.25;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime+0.8);
+            osc.stop(audio.currentTime+0.8);
+            showToast("🎆 إجابة صحيحة! ألعاب نارية 🎆");
+        }
+
+        function playWrongSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "square";
+            osc.frequency.value = 150;
+            gain.gain.value = 0.4;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+0.5);
+            osc.stop(audioCtx.currentTime+0.5);
+            showToast("🔊 إجابة خاطئة! لم تصل للهدف.", "#e67e22");
+        }
+
+        function showToast(msg, bg="#2ecc71") {
+            const t = document.createElement("div");
+            t.className = "toast-msg";
+            t.innerText = msg;
+            t.style.background = bg;
+            document.body.appendChild(t);
+            setTimeout(()=>t.remove(), 1800);
+        }
+
+        document.getElementById('resetShipBtn').addEventListener('click', () => setShipPosition(PORT.x, PORT.y));
+        xSlider.addEventListener('input', updateShipFromSliders);
+        ySlider.addEventListener('input', updateShipFromSliders);
+        checkBtn.addEventListener('click', checkArrival);
+        
+        document.querySelectorAll('.quest-buttons button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const type = btn.getAttribute('data-target');
+                setMission(type);
+            });
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let mouseX = (e.clientX - rect.left) * scaleX;
+            let mouseY = (e.clientY - rect.top) * scaleY;
+            const centerX = width/2, centerY = height/2;
+            const step = 50;
+            let calcX = (mouseX - centerX) / step;
+            let calcY = (centerY - mouseY) / step;
+            calcX = Math.round(calcX*2)/2;
+            calcY = Math.round(calcY*2)/2;
+            setShipPosition(calcX, calcY);
+        });
+        
+        setShipPosition(PORT.x, PORT.y);
+        setMission("port");
+    })();
+</script>
+</body>
+</html>
